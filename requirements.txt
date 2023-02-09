@@ -1,0 +1,4 @@
+azure.storage
+requests
+json
+databricks-cli
