@@ -22,19 +22,23 @@ class query_history:
                 }}
             }}"""
         request = requests.get(self.url,data = data, headers=self.headers)
-        while request:
-            for row in request.json()["res"]:
-                    for attribute, value in row.items():
-                        if attribute in col_list:
-                            export_data[attribute] = value
-                            rows.append(export_data)
+        
+        if 'res' in request.json():
+            while request:
+                for row in request.json()["res"]:
+                        for attribute, value in row.items():
+                            if attribute in col_list:
+                                export_data[attribute] = value
+                                rows.append(export_data)
 
-            if request.json()["has_next_page"]:
-                ntoken = request.json()["next_page_token"]
-                request = request.get(self.url+"?next_page_token="+ntoken, headers=self.headers,data=data)
-            else:
-                request = None
-        return json.dumps(rows)
+                if request.json()["has_next_page"]:
+                    ntoken = request.json()["next_page_token"]
+                    request = request.get(self.url+"?next_page_token="+ntoken, headers=self.headers,data=data)
+                else:
+                    request = None
+            return json.dumps(rows)
+        else:
+             return None
     
     def save_to_adls(self, data, storage_account_name, storage_account_key, file_system, file_directory, file_name):
         try:
