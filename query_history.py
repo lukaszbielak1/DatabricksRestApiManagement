@@ -36,14 +36,14 @@ class query_history:
                 request = None
         return json.dumps(rows)
     
-    def save_to_adls(self, data, storage_account_name, storage_account_key):
+    def save_to_adls(self, data, storage_account_name, storage_account_key, file_system, file_directory, file_name):
         try:
             service_client = DataLakeServiceClient(account_url="{}://{}.dfs.core.windows.net".format(
                 "https", storage_account_name), credential=storage_account_key)
 
-            file_system_client = service_client.get_file_system_client(file_system="databrickslogs")
-            directory_client = file_system_client.get_directory_client("query_history")
-            file_client = directory_client.create_file("query_history.json")
+            file_system_client = service_client.get_file_system_client(file_system=file_system)
+            directory_client = file_system_client.get_directory_client(file_directory)
+            file_client = directory_client.create_file(file_name)
             file_client.append_data(data=data, offset=0, length=len(data))
             file_client.flush_data(len(data))
         except Exception as e:
