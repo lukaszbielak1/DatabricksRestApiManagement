@@ -41,10 +41,10 @@ class job_creator:
         self.job_client.create_job(json_command)
 
     def delete_job_if_exists(self,job_name):
-        job_details = jc.job_client._list_jobs_by_name(job_name)
+        job_details = self.job_client._list_jobs_by_name(job_name)
         if(len(job_details) > 0):
             job_id = job_details[0].get("job_id")
-            jc.job_client.delete_job(job_id) 
+            self.job_client.delete_job(job_id) 
             print(f"Job {job_name} deleted")
         
     def read_config(self,storage_account_name, storage_account_key, file_system, directory, file_name):
